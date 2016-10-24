@@ -8,5 +8,5 @@ public interface IGraph {
 	
 	public void graphGenerator() throws Exception;
 
-	public Queue<Intersection> getBreadthFirstTraversal(Intersection start) throws Exception;
+	public Queue<Intersection> getBreadthFirstTraversal(Intersection start, Intersection end) throws Exception;
 }

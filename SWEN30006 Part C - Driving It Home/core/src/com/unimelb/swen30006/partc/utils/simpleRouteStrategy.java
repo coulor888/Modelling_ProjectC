@@ -25,29 +25,25 @@ public class simpleRouteStrategy extends Route {
 	}
 	
 	public void routePlan(Point2D.Double currentPos, Point2D.Double destination) throws Exception{
-		if(world.intersectionAtPoint(currentPos) !=null)
-		{
+	
 			intersections = (ArrayList<Intersection>) graph.getBreadthFirstTraversal(
-					world.intersectionAtPoint(currentPos));
+					findIntersection(currentPos), findIntersection(destination));
 			findRoads();
-		}		
-		else
-		{
-			intersections = (ArrayList<Intersection>) graph.getBreadthFirstTraversal(
-					findStartIntersection(currentPos));
-			findRoads();
-		}
-		
 	}
 	
 	public static void getInstance() throws Exception{
 		SRS = new simpleRouteStrategy(world.getIntersections());
 	}
+	
 	/*
-	 * find a starting intersection when current position is not on the intersections
+	 * find a starting or ending intersection 
+	 * return the near intersection when position is not on the intersections
 	 */
-	public Intersection findStartIntersection(Point2D.Double currentPos)
+	public Intersection findIntersection(Point2D.Double currentPos)
 	{	
+		if(null == world.intersectionAtPoint(currentPos))
+			return world.intersectionAtPoint(currentPos);
+		
 		Road road = null;
 		if(null == world.roadAtPoint(currentPos))
 		{

@@ -42,7 +42,8 @@ public class NoDirectGraph implements IGraph{
 		}
 	}
 
-	public Queue<Intersection> getBreadthFirstTraversal(Intersection start) throws Exception
+	@Override
+	public Queue<Intersection> getBreadthFirstTraversal(Intersection start, Intersection end) throws Exception
 	{
 		graphGenerator();
         Queue<IVertex<Intersection>> vertexQueue = new LinkedList<IVertex<Intersection>>();
@@ -55,12 +56,14 @@ public class NoDirectGraph implements IGraph{
         while(!vertexQueue.isEmpty()){
         	IVertex<Intersection> frontVertex = vertexQueue.poll();
             Iterator<IVertex<Intersection>> neighbors = frontVertex.getNeighborInterator();
-            while(neighbors.hasNext())
+            while(neighbors.hasNext())//adjoining vertex 
             {
             	IVertex<Intersection> nextNeighbor = neighbors.next();
                 if(!nextNeighbor.isVisited()){
                     nextNeighbor.visit();
                     traversalOrder.offer(nextNeighbor.getItem());
+                    if(end.equals(nextNeighbor.getItem()))
+                    	return traversalOrder;
                     vertexQueue.offer(nextNeighbor);
                 }
             }
