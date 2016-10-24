@@ -49,7 +49,17 @@ public class Planning implements IPlanning {
 			Double point = new Double();
 			point.x = 700;
 			point.y =700;
-			planRoute(point);
+			//planRoute(point);
+			//simulation of planning route
+			route.addPoint(new Double(157.5, 30));
+			route.addPoint(new Double(157.5, 113.75));
+			route.addPoint(new Double(157.5, 166.25));
+			route.addPoint(new Double(157.5, 225));
+			route.addPoint(new Double(157.5, 270));
+			route.addPoint(new Double(200, 270));
+			route.addPoint(new Double(240, 270));
+			route.addPoint(new Double(240, 280));
+			targetPoint = new Double(157.5, 30);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,10 +95,14 @@ public class Planning implements IPlanning {
 						(int)car.getLength());
 		
 		Point2D.Double tmptargetPoint;
-		if (shouldTakeNextPoint(car.getPosition(), targetPoint, car.getVelocity())) {
+		if (shouldTakeNextPoint(car.getPosition(), targetPoint, car.getVelocity(),delta)) {
 			try {
 				//get next point
 				targetPoint = route.routePointGetNext(targetPoint);
+				if(null == targetPoint){
+					int a =2;
+					a++;
+				}
 				//
 				if (route.routePointGetNext(targetPoint) == null) {
 					finalPointFlag = true;
@@ -135,10 +149,10 @@ public class Planning implements IPlanning {
 	}
 
 
-	private boolean shouldTakeNextPoint(Double currentPoint, Double CurrentTarget, Vector2 speed) {
+	private boolean shouldTakeNextPoint(Double currentPoint, Double CurrentTarget, Vector2 speed , float delta) {
 		Double nextpoint = new Point2D.Double();
-		nextpoint.x = currentPoint.getX() + speed.x;
-		nextpoint.y = currentPoint.getY() + speed.y;
+		nextpoint.x = currentPoint.getX() + speed.x * delta ;
+		nextpoint.y = currentPoint.getY() + speed.y * delta;
 		
 		Vector2 c2tPoint = new Vector2();
 		c2tPoint.x = (float) (CurrentTarget.getX() - currentPoint.getX());
@@ -147,7 +161,7 @@ public class Planning implements IPlanning {
 		n2tPoint.x = (float) (CurrentTarget.getX() - nextpoint.getX());
 		n2tPoint.y = (float) (CurrentTarget.getY() - nextpoint.getY());
 		// TODO Auto-generated method stub
-		return (c2tPoint.len()<n2tPoint.len());
+		return (Math.abs(c2tPoint.len())<Math.abs(n2tPoint.len()));
 	}
 
 

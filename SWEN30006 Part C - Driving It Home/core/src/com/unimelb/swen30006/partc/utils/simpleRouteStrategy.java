@@ -12,9 +12,7 @@ import com.unimelb.swen30006.partc.roads.Road;
 
 public class simpleRouteStrategy extends Route {
 	
-	private ArrayList<Road> roads = new ArrayList<Road>() ;
-	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
-	private ArrayList<Point2D.Double> routePoints = new ArrayList<Point2D.Double>();
+
 	
 	private static simpleRouteStrategy SRS;
 	private IGraph graph;
@@ -286,25 +284,29 @@ public class simpleRouteStrategy extends Route {
 
 	@Override
 	public Double routePointGetNext(Point2D.Double routePos) throws Exception {
-		Iterator<Point2D.Double> iter = routePoints.iterator();	
 		
 		boolean flagExistence = false;
-		
-		while(iter.hasNext())
-		{
-			if(iter.next() == routePos)
-			{
-				flagExistence = true;
-			}
-			if(flagExistence)
-			{				
-				if(!iter.hasNext())
-					throw new Exception("no such points");
-				else
-					return iter.next();
-			}
+		if(null == routePos){
+			Double point =  routePoints.get(0);
+			return point;
 		}
+		else{
+			for (int i = 0; i < routePoints.size(); i++) {
+				Double tmppoint =  routePoints.get(i);
+				if (null != tmppoint) {
+					if((tmppoint.getX() == routePos.getX())&&
+							(tmppoint.getY() == routePos.getY() ) ){
+						if(i == routePoints.size()-1)
+							return null;
+						else
+							return routePoints.get(i+1);
+					}
+				}
+			}
+
+			throw new Exception("not on the route");
+		}
+
 		
-		return null;
 	}
 }

@@ -9,9 +9,9 @@ import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.roads.Road;
 
 public abstract class Route {
-	private ArrayList<Road> roads = new ArrayList<Road>() ;
-	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
-	private ArrayList<Point2D.Double> routePoint = new ArrayList<Point2D.Double>();
+	protected ArrayList<Road> roads = new ArrayList<Road>() ;
+	protected ArrayList<Intersection> intersections = new ArrayList<Intersection>();
+	protected ArrayList<Point2D.Double> routePoints = new ArrayList<Point2D.Double>();
 	
 	public void routePlan(Point2D.Double currentPos , Point2D.Double destination) throws Exception
 	{		
@@ -30,7 +30,7 @@ public abstract class Route {
 	
 	public ArrayList<Point2D.Double> routePoint()
 	{
-		return routePoint;
+		return routePoints;
 	}
 	/*
 	 * determine whether there is a latter point in the points list
@@ -49,4 +49,8 @@ public abstract class Route {
 	
 	public abstract Double findPointInRoadEnd(Road road, Intersection intersection);
 	
+	public void addPoint(Double point) {
+		routePoints.add(point);
+		
+	}
 }

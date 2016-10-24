@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.*;
 
 /**
  * This class provides functionality for use within the simulation system. It is NOT intended to be
@@ -98,8 +99,9 @@ public final class Intersection {
 		Direction dir = null;
 		Iterator<HashMap.Entry<Direction, Road>> iter = roads.entrySet().iterator();
 		while(iter.hasNext()){
-			if(iter.equals(road)){
-				dir = iter.next().getKey();
+			HashMap.Entry<Direction, Road> nextentry = iter.next();
+			if(nextentry.getValue().equals(road)){
+				dir = nextentry.getKey();
 			}
 		}
 		if(dir == Direction.North){

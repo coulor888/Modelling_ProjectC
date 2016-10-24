@@ -72,8 +72,9 @@ public class World implements ISteppable {
 	 */
 	public World() {
 		// Create a map reader
-		MapReader reader = new MapReader("test_course.xml");
-
+//		MapReader reader = new MapReader("test_course.xml");
+		
+		MapReader reader = new MapReader("mapForTesting.xml");
 		// Retrieve the values from the map reader
 		this.roads = reader.processRoads();
 		this.objects = reader.processWorldObjects();
@@ -88,7 +89,7 @@ public class World implements ISteppable {
 		// Controllers and cars
 		this.controllers = new Controller[1];
 		this.cars = new Car[1];
-		this.cars[0] = new Car(new Point2D.Double(80,140), 6, 10, Color.CORAL, 25f, 50f, 6f );
+		this.cars[0] = new Car(new Point2D.Double(157.5, 20), 6, 10, Color.CORAL, 25f, 50f, 6f );
 //		this.controllers[0] = new KeyboardController(cars[0]);
 		this.controllers[0] = new AIController(cars[0],new Planning(this.cars[0],this), new PerceptionForTesting(this));
 
@@ -396,7 +397,7 @@ public class World implements ISteppable {
 	public TrafficLight getTrafficLight(Road road, Intersection intersection){
 		TrafficLight tl = null;
 		String Dir = intersection.getDirectionByRoad(road);
-		Point2D.Double point = null;
+		Point2D.Double point = new Point2D.Double();
 		if(Dir == "North"){
 			point.x = intersection.pos.x + intersection.width/2;
 			point.y = intersection.pos.y - intersection.length/2;
