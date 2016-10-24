@@ -2329,7 +2329,20 @@
 					<direction>east</direction>
 				</end>
 			</intersections>
-		</road>
+		<road>
+			<start_x>0</start_x>
+			<start_y>495</start_y>
+			<end_x>150</end_x>
+			<end_y>495</end_y>
+			<width>30</width>
+			<num_lanes>2</num_lanes>
+			<intersections>
+				<end>
+					<id>A4</id>
+					<direction>east</direction>
+				</end>
+			</intersections>
+		</road></road>
 		<road>
 			<start_x>165</start_x>
 			<start_y>380</start_y>
@@ -2348,20 +2361,7 @@
 				</end>
 			</intersections>
 		</road>
-		<road>
-			<start_x>0</start_x>
-			<start_y>495</start_y>
-			<end_x>150</end_x>
-			<end_y>495</end_y>
-			<width>30</width>
-			<num_lanes>2</num_lanes>
-			<intersections>
-				<end>
-					<id>A4</id>
-					<direction>east</direction>
-				</end>
-			</intersections>
-		</road>
+		
 		<road>
 			<start_x>165</start_x>
 			<start_y>510</start_y>
@@ -3059,35 +3059,6 @@
 			<intersections>
 				<end>
 					<id>D3</id>
-					<direction>west</direction>
-				</end>
-			</intersections>
-		</road>
-		<road>
-			<start_x>540</start_x>
-			<start_y>495</start_y>
-			<end_x>800</end_x>
-			<end_y>495</end_y>
-			<width>30</width>
-			<num_lanes>2</num_lanes>
-			<intersections>
-				<end>
-					<id>D4</id>
-					<direction>west</direction>
-				</end>
-			</intersections>
-		</road>
-
-		<road>
-			<start_x>540</start_x>
-			<start_y>635</start_y>
-			<end_x>800</end_x>
-			<end_y>635</end_y>
-			<width>30</width>
-			<num_lanes>2</num_lanes>
-			<intersections>
-				<end>
-					<id>D5</id>
 					<direction>west</direction>
 				</end>
 			</intersections>

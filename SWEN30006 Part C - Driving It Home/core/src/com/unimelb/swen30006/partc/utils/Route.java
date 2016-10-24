@@ -1,6 +1,7 @@
 package com.unimelb.swen30006.partc.utils;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -34,12 +35,18 @@ public abstract class Route {
 	/*
 	 * determine whether there is a latter point in the points list
 	 */
-	public abstract boolean routePointHasNext();
+	public abstract boolean routePointHasNext(Point2D.Double currentPos);
 	
 	/*
 	 * get a latter point in the points list 
 	 * return null when there is not a latter point
 	 */
-	public abstract Point2D.Double routePointGetNext(Point2D.Double currentPos);
+	public abstract Point2D.Double routePointGetNext(Point2D.Double currentPos) throws Exception;
+	
+	public abstract Double findPointInIntersection(Road road, Intersection intersection);
+	
+	public abstract Double findPointInRoadBegin(Road road, Intersection intersection);
+	
+	public abstract Double findPointInRoadEnd(Road road, Intersection intersection);
 	
 }

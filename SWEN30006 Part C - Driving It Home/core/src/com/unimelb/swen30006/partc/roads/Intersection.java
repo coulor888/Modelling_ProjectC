@@ -93,4 +93,46 @@ public final class Intersection {
 		return result;
 	}
 
+	public String getDirectionByRoad(Road road){
+		String Dir = null;
+		Direction dir = null;
+		Iterator<HashMap.Entry<Direction, Road>> iter = roads.entrySet().iterator();
+		while(iter.hasNext()){
+			if(iter.equals(road)){
+				dir = iter.next().getKey();
+			}
+		}
+		if(dir == Direction.North){
+			Dir = "North";
+		}else if(dir == Direction.South){
+			Dir = "South";
+		}else if(dir == Direction.East){
+			Dir = "East";
+		}else if(dir == Direction.West){
+			Dir = "West";
+		}else{
+			System.out.println("Not connected!");
+		}
+		return Dir;
+	}
+	
+	// get the point in the intersection where the car can turn based on the entry road
+	public Point2D.Double getShiftPoint(Road road){
+		Point2D.Double point = pos;
+		String Dir = getDirectionByRoad(road);
+		if(Dir == "North"){
+			point.x = pos.x + width/4;
+			point.y = pos.y + length/4;
+		}else if(Dir == "South"){
+			point.x = pos.x - width/4;
+			point.y = pos.y - length/4;
+		}else if(Dir == "East"){
+			point.x = pos.x + width/4;
+			point.y = pos.y - length/4;
+		}else if(Dir == "West"){
+			point.x = pos.x - width/4;
+			point.y = pos.y + length/4;
+		}
+		return point;
+	}
 }

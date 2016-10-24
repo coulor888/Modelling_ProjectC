@@ -14,14 +14,16 @@ public class simpleRouteStrategy extends Route {
 	
 	private ArrayList<Road> roads = new ArrayList<Road>() ;
 	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
+	private ArrayList<Point2D.Double> routePoints = new ArrayList<Point2D.Double>();
 	
 	private static simpleRouteStrategy SRS;
 	private IGraph graph;
-	private final static World world = new World();
+	private World world;
 	
 	
-	private simpleRouteStrategy(Intersection[] intersections) throws Exception{
-		this.graph = new NoDirectGraph(world.getIntersections());		
+	public simpleRouteStrategy(Intersection[] intersections, World w) throws Exception{
+		this.graph = new NoDirectGraph(world.getIntersections());	
+		world = w;
 	}
 	
 	public void routePlan(Point2D.Double currentPos, Point2D.Double destination) throws Exception{
@@ -31,17 +33,13 @@ public class simpleRouteStrategy extends Route {
 			findRoads();
 	}
 	
-	public static void getInstance() throws Exception{
-		SRS = new simpleRouteStrategy(world.getIntersections());
-	}
-	
 	/*
 	 * find a starting or ending intersection 
-	 * return the near intersection when position is not on the intersections
+	 * return the close intersection when position is not on the intersections
 	 */
 	public Intersection findIntersection(Point2D.Double currentPos)
-	{	
-		if(null == world.intersectionAtPoint(currentPos))
+	{
+		if(null != world.intersectionAtPoint(currentPos))
 			return world.intersectionAtPoint(currentPos);
 		
 		Road road = null;
@@ -58,7 +56,98 @@ public class simpleRouteStrategy extends Route {
 			return world.intersectionAtPoint(road.getStartPos());
 		else
 			return world.intersectionAtPoint(road.getEndPos());
-
+	}
+	
+	public void initRoutePoints(Point2D.Double currentPos, Point2D.Double destination)
+	{	
+		routePoints.clear();
+		if(null != world.intersectionAtPoint(currentPos))
+		{
+			routePoints.add(currentPos);
+		}		
+		else if(null == world.roadAtPoint(currentPos))
+		{
+			Point2D.Double pos = null;		
+			routePoints.add(currentPos);
+			Road road = null;
+			road = world.closestRoad(currentPos);
+			if(road.getStartPos().x<currentPos.x && road.getEndPos().x<currentPos.x)
+			{
+				pos = new Point2D.Double(road.getEndPos().x + road.getWidth()/4 , currentPos.y);
+				routePoints.add(pos);
+			}
+			else if(road.getStartPos().x>currentPos.x && road.getEndPos().x>currentPos.x)
+			{
+				pos = new Point2D.Double(road.getEndPos().x - road.getWidth()/4 , currentPos.y);
+				routePoints.add(pos);
+			}
+			else if(road.getStartPos().y<currentPos.y && road.getEndPos().y<currentPos.y)
+			{
+				pos = new Point2D.Double( currentPos.x, road.getEndPos().y + road.getWidth()/4);
+				routePoints.add(pos);
+			}
+			else
+			{
+				pos = new Point2D.Double(currentPos.x, road.getEndPos().y - road.getWidth()/4);
+				routePoints.add(pos);
+			}
+			routePoints.add(findPointInRoadEnd(road, intersections.get(0)));
+			routePoints.add(findPointInIntersection(road, intersections.get(0)));
+		}
+		else
+		{
+			routePoints.add(currentPos);
+			Road road = world.roadAtPoint(currentPos);
+			routePoints.add(findPointInRoadEnd(road, intersections.get(0)));
+			routePoints.add(findPointInIntersection(road, intersections.get(0)));
+		}	
+		
+		for(int i = 0; i < intersections.size() + 1; i++)
+		{
+			routePoints.add(findPointInRoadBegin(roads.get(i), intersections.get(i)));
+			routePoints.add(findPointInRoadEnd(roads.get(i), intersections.get(i + 1)));
+			routePoints.add(findPointInIntersection(roads.get(i), intersections.get(i + 1)));
+		}
+		
+		if(null != world.intersectionAtPoint(destination))
+		{
+			routePoints.add(destination);
+			return;
+		}		
+		else if(null == world.roadAtPoint(destination))
+		{
+			Point2D.Double pos = null;		
+			Road road = null;
+			road = world.closestRoad(currentPos);
+			routePoints.add(findPointInRoadBegin(road, intersections.get(intersections.size() - 1)));
+			if(road.getStartPos().x<currentPos.x && road.getEndPos().x<currentPos.x)
+			{
+				pos = new Point2D.Double(road.getEndPos().x + road.getWidth()/4 , currentPos.y);
+				routePoints.add(pos);
+			}
+			else if(road.getStartPos().x>currentPos.x && road.getEndPos().x>currentPos.x)
+			{
+				pos = new Point2D.Double(road.getEndPos().x - road.getWidth()/4 , currentPos.y);
+				routePoints.add(pos);
+			}
+			else if(road.getStartPos().y<currentPos.y && road.getEndPos().y<currentPos.y)
+			{
+				pos = new Point2D.Double( currentPos.x, road.getEndPos().y + road.getWidth()/4);
+				routePoints.add(pos);
+			}
+			else
+			{
+				pos = new Point2D.Double(currentPos.x, road.getEndPos().y - road.getWidth()/4);
+				routePoints.add(pos);
+			}
+			routePoints.add(destination);
+		}
+		else
+		{			
+			Road road = world.roadAtPoint(currentPos);
+			routePoints.add(findPointInRoadBegin(road, intersections.get(intersections.size() - 1)));
+			routePoints.add(destination);
+		}	
 	}
 	
 	/*
@@ -89,14 +178,87 @@ public class simpleRouteStrategy extends Route {
 	}
 
 	@Override
-	public boolean routePointHasNext() {
-		// TODO Auto-generated method stub
+	public Double findPointInIntersection(Road road, Intersection intersection) {
+		return intersection.getShiftPoint(road);
+	}
+
+	@Override
+	public Double findPointInRoadBegin(Road road, Intersection intersection) {
+		String Dir = intersection.getDirectionByRoad(road);
+		Point2D.Double point = intersection.pos;
+		float shift = road.getLength();
+		if(Dir == "North"){
+			point.x = intersection.pos.x - intersection.width/4;
+			point.y = intersection.pos.y + intersection.length/2 + shift/8;
+		}else if(Dir == "South"){
+			point.x = intersection.pos.x + intersection.width/4;
+			point.y = intersection.pos.y - intersection.length/2 - shift/8;
+		}else if(Dir == "East"){
+			point.x = intersection.pos.x + intersection.width/2 + shift/8;
+			point.y = intersection.pos.y + intersection.length/4 ;
+		}else if(Dir == "West"){
+			point.x = intersection.pos.x - intersection.width/2 - shift/8;
+			point.y = intersection.pos.y - intersection.length/4 ;
+		}
+		return point;
+	}
+
+	@Override
+	public Double findPointInRoadEnd(Road road, Intersection intersection) {
+		String Dir = intersection.getDirectionByRoad(road);
+		Point2D.Double point = intersection.pos;
+		float shift = road.getLength();
+		if(Dir == "North"){
+			point.x = intersection.pos.x + intersection.width/4;
+			point.y = intersection.pos.y + intersection.length/2 + shift/8;
+		}else if(Dir == "South"){
+			point.x = intersection.pos.x - intersection.width/4;
+			point.y = intersection.pos.y - intersection.length/2 - shift/8;
+		}else if(Dir == "East"){
+			point.x = intersection.pos.x + intersection.width/2 + shift/8;
+			point.y = intersection.pos.y - intersection.length/4 ;
+		}else if(Dir == "West"){
+			point.x = intersection.pos.x - intersection.width/2 - shift/8;
+			point.y = intersection.pos.y + intersection.length/4 ;
+		}
+		return point;
+	}
+
+	
+	@Override
+	public boolean routePointHasNext(Point2D.Double pos) {
+		Iterator<Point2D.Double> iter = routePoints.iterator();	
+		
+		while(iter.hasNext())
+		{
+			if(iter.next() == pos)
+				return true;
+		}
+		
 		return false;
 	}
 
 	@Override
-	public Double routePointGetNext(Double currentPos) {
-		// TODO Auto-generated method stub
+	public Double routePointGetNext(Point2D.Double routePos) throws Exception {
+		Iterator<Point2D.Double> iter = routePoints.iterator();	
+		
+		boolean flagExistence = false;
+		
+		while(iter.hasNext())
+		{
+			if(iter.next() == routePos)
+			{
+				flagExistence = true;
+			}
+			if(flagExistence)
+			{				
+				if(!iter.hasNext())
+					throw new Exception("no such points");
+				else
+					return iter.next();
+			}
+		}
+		
 		return null;
 	}
 }
