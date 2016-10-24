@@ -3,6 +3,7 @@ package com.unimelb.swen30006.partc.roads;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -72,6 +73,24 @@ public final class Intersection {
 				   INTERSECTION_LINE_WIDTH);
 		// Set the old colours back
 		r.setColor(old);
+	}
+	
+	public boolean isConnected(Intersection intersection){
+		boolean result = false;
+		//exclude this intersection itself;
+		if(this.pos == intersection.pos){
+			return result;
+		}
+		
+		Iterator<Road> iter1 = roads.values().iterator();
+		Iterator<Road> iter2 = intersection.roads.values().iterator();
+		while(iter1.hasNext()){
+			Road road = iter1.next();
+			while(iter2.hasNext()){
+				result = iter2.next().equals(road);
+			}
+		}
+		return result;
 	}
 
 }
