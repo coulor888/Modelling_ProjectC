@@ -8,9 +8,18 @@ public class Graph implements GraphStructure {
 	// adjacency lists
 	private Bag<Intersection>[] adj;
 	
-	public Graph(Intersection[] intersections){
+	public Graph(Intersection[] intersections) throws Exception{
 		this.V = intersections.length;
-		adj = (Bag<Intersection>[]) new Bag[V];
+		
+		if(this.V > 0)
+		{
+			adj = (Bag<Intersection>[]) new Bag[V];
+		}
+		else
+		{
+			throw new Exception("no intersection");
+		}
+		
 		for (int i = 0; i< V; i++){
 			adj[i] = new Bag<Intersection>();
 		}
@@ -27,7 +36,7 @@ public class Graph implements GraphStructure {
 				if(intersections[i].isConnected(intersection2)){
 					adj[i].add(intersection2);
 				}
-				if(adj[i].size()==4){
+				if(adj[i].size()>=4){
 					break;
 				}
 			}
