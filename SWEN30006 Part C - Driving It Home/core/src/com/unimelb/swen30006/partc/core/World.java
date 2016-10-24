@@ -87,8 +87,8 @@ public class World implements ISteppable {
 		this.controllers = new Controller[1];
 		this.cars = new Car[1];
 		this.cars[0] = new Car(new Point2D.Double(80,140), 6, 10, Color.CORAL, 25f, 50f, 6f );
-		this.controllers[0] = new KeyboardController(cars[0]);
-//		this.controllers[0] = new AIController(cars[0],new Planning(), new PerceptionForTesting(this));
+//		this.controllers[0] = new KeyboardController(cars[0]);
+		this.controllers[0] = new AIController(cars[0],new Planning(this.cars[0],this), new PerceptionForTesting(this));
 
 		// Remaning variables
 		this.worldTime = MIDDAY;

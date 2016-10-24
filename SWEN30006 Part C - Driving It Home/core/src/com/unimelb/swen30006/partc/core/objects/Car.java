@@ -71,6 +71,10 @@ public class Car extends WorldObject implements ISteppable {
 		this.accelerating = false;
 		this.reversing = false;
 	}
+	
+	public float getbreakingPower() {
+		return this.brakingPower;
+	}
 
 	@Override
 	public void update(float delta) {
@@ -134,7 +138,7 @@ public class Car extends WorldObject implements ISteppable {
 
 	}
 	
-	private Vector2 calculateAcceleration(float drivingForce, float brakingForce){
+	public Vector2 calculateAcceleration(float drivingForce, float brakingForce){
 		// Create an acceleration vector by rotating a unit vector
 		// and scaling with the appropriate force
 		Vector2 acceleration = new Vector2(1,0);
