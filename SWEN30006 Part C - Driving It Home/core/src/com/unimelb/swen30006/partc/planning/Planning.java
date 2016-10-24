@@ -9,6 +9,7 @@ import com.sun.javafx.scene.paint.GradientUtils.Point;
 import com.unimelb.swen30006.partc.ai.interfaces.IPlanning;
 import com.unimelb.swen30006.partc.ai.interfaces.PerceptionResponse;
 import com.unimelb.swen30006.partc.core.World;
+import com.unimelb.swen30006.partc.core.infrastructure.TrafficLight;
 import com.unimelb.swen30006.partc.core.objects.Car;
 import com.unimelb.swen30006.partc.roads.Intersection;
 import com.unimelb.swen30006.partc.utils.Graph;
@@ -29,8 +30,12 @@ public class Planning implements IPlanning {
 	private Route route;
 	
 	private boolean tempXY4Test = false;
+	//current target
 	private Point2D.Double targetPoint;
+	//To measure should change target
 	private double remainingDistance;
+	//Raise if it is final point
+	private boolean finalPointFlag = false;
 	
 	//generator
 	public Planning(Car car, World world){
@@ -73,54 +78,76 @@ public class Planning implements IPlanning {
 
 	private void updateCarwithPerception(PerceptionResponse[] results, int visibility, float delta) {
 		
+		
 		int safetyDistance = SpeedUtils.getSafetyDistance
 				(car.getVelocity().len(), 
 						car.calculateAcceleration(0, car.getbreakingPower()).len(), 
 						(int)car.getLength());
+		
+		Point2D.Double tmptargetPoint;
+		if (shouldTakeNextPoint(car.getPosition(), targetPoint, car.getVelocity())) {
+			try {
+				//get next point
+				targetPoint = route.routePointGetNext(targetPoint);
+				//
+				if (route.routePointGetNext(targetPoint) == null) {
+					finalPointFlag = true;
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		// make the car face the target
+		tmptargetPoint = targetPoint;
+		car.turn(calDeviationAngle(car.getPosition(),tmptargetPoint,car.getVelocity()));
+		Point2D.Double safetyPoint = SpeedUtils.getSafetyPoint(car.getPosition(), car.getVelocity(),
+				safetyDistance);
+		
 		if(shouldCarBreak(results, safetyDistance)){
 			car.brake();
 		}
-		else{
-			Point2D.Double tmptargetPoint;
-			if (shouldTakeNextPoint()) {
-				//take next point
+		else
+		{
+			if (finalPointFlag) {
+				// check if reaching the destination
+				if (SpeedUtils.inPointsNear(targetPoint, safetyPoint)) {
+					car.brake();
+				}
 			}
-			else{
-				//judge if intersection is within the safety distance
-				//if so
-					//judge traffic light
-						//if red
-							//break
-						//else
-							// turn and acc
-				//else
-					//turn and acc
-				//take current target point as the targetPoint
+			// judge if intersection is within the safety distance
+			if (null != this.world.intersectionAtPoint(safetyPoint)
+					&& null != this.world.roadAtPoint(car.getPosition())) {
+				// judge traffic light
+				TrafficLight trafficLight = this.world.getTrafficLight(this.world.roadAtPoint(car.getPosition()),
+						this.world.intersectionAtPoint(safetyPoint));
+				if (TrafficLight.RED_COL == trafficLight.getColour()) {
+					car.brake();
+				} else {
+					car.accelerate();
+				}
+			} else {
+				car.accelerate();
+			}					
 			}
-			//test code
-			tmptargetPoint = new Point2D.Double(car.getPosition().getX(),car.getPosition().getY());
-			if (tempXY4Test) {
-				tmptargetPoint.x += 5;
-				tmptargetPoint.y += 5;
-				tempXY4Test = !tempXY4Test;
-			}
-			else {
-				tmptargetPoint.x -= 5;
-				tmptargetPoint.y -= 5;
-				tempXY4Test = !tempXY4Test;
-			}
-
-			car.turn(calDeviationAngle(car.getPosition(),tmptargetPoint,car.getVelocity()));
-			car.accelerate();
-		}
 
 		car.update(delta);
 	}
 
 
-	private boolean shouldTakeNextPoint() {
+	private boolean shouldTakeNextPoint(Double currentPoint, Double CurrentTarget, Vector2 speed) {
+		Double nextpoint = new Point2D.Double();
+		nextpoint.x = currentPoint.getX() + speed.x;
+		nextpoint.y = currentPoint.getY() + speed.y;
+		
+		Vector2 c2tPoint = new Vector2();
+		c2tPoint.x = (float) (CurrentTarget.getX() - currentPoint.getX());
+		c2tPoint.y = (float) (CurrentTarget.getY() - currentPoint.getY());
+		Vector2 n2tPoint = new Vector2();
+		n2tPoint.x = (float) (CurrentTarget.getX() - nextpoint.getX());
+		n2tPoint.y = (float) (CurrentTarget.getY() - nextpoint.getY());
 		// TODO Auto-generated method stub
-		return false;
+		return (c2tPoint.len()<n2tPoint.len());
 	}
 
 

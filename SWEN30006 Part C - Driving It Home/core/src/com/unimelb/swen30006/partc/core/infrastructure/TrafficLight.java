@@ -30,7 +30,7 @@ public class TrafficLight extends Infrastructure implements ISteppable {
 	private static final float AMBER_TIMER = 5f;
 	private static final Color AMBER_COL = Color.YELLOW;
 	private static final Color GREEN_COL = Color.GREEN;
-	private static final Color RED_COL = Color.RED;
+	public static final Color RED_COL = Color.RED;
 	
 	// Internal data for state transitions and managing the traffic light
 	private State state;

@@ -25,9 +25,21 @@ public class SpeedUtils {
 	
 	public static Point2D.Double getSafetyPoint(Point2D.Double startingPoint,Vector2 velocity,
 			int safetyDistance){
+
 		Point2D.Double SafetyPoint = new Point2D.Double(startingPoint.getX(), startingPoint.getY());
-		SafetyPoint.x += velocity.x /velocity.len() * safetyDistance;
-		SafetyPoint.y += velocity.y /velocity.len() * safetyDistance;
+		if(0 != velocity.len()){
+			SafetyPoint.x += velocity.x /velocity.len() * safetyDistance;
+			SafetyPoint.y += velocity.y /velocity.len() * safetyDistance;
+		}
+
 		return SafetyPoint;
+	}
+
+	public static boolean inPointsNear(Point2D.Double pointA, Point2D.Double pointB){
+		Vector2 distance = new Vector2();
+		distance.x = (float) (pointB.getX() - pointA.getX());
+		distance.y = (float) (pointB.getY() - pointA.getY());
+		return (Math.abs(distance.len())<0.08);
+		
 	}
 }
