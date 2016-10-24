@@ -1,22 +1,18 @@
 package com.unimelb.swen30006.partc.timeEstimate;
 
+import java.util.ArrayList;
+
+import com.unimelb.swen30006.partc.roads.Intersection;
+import com.unimelb.swen30006.partc.roads.Road;
 import com.unimelb.swen30006.partc.utils.Route;
 
-public class estimateTime {
-
-	protected Route route;
-	protected int numIntersections;
-	protected float longRoads;
+public abstract class estimateTime {
+	private ArrayList<Intersection> intersections;
+	private ArrayList<Road> road;
+	private int numIntersections;
+	private float longRoads;
 	
-	public int estimateTime(Route route){
-		return 0;
-	}
+	public abstract float estimateTime();
 	
-	public void intersectionCal(){
-		
-	}
-	
-	public void roadLongCal(){
-		
-	}
+	public abstract void roadLongCal();
 }
