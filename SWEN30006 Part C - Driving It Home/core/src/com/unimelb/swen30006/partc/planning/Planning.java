@@ -16,6 +16,8 @@ import com.unimelb.swen30006.partc.utils.GraphStructure;
 import com.unimelb.swen30006.partc.utils.Route;
 import com.unimelb.swen30006.partc.utils.SpeedUtils;
 import com.unimelb.swen30006.partc.utils.angleCal;
+import com.unimelb.swen30006.partc.utils.simpleRouteStrategy;
+
 
 public class Planning implements IPlanning {
 	private Car car;
@@ -37,12 +39,29 @@ public class Planning implements IPlanning {
 		this.intersections = world.getIntersections();
 		this.world =  world;
 		targetPoint = null;
+		try {
+			route = new simpleRouteStrategy(this.intersections, this.world);
+			Double point = new Double();
+			point.x = 700;
+			point.y =700;
+			planRoute(point);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	} 
 	
 	
 	@Override
 	public boolean planRoute(Double destination) {
+		
 		// TODO Auto-generated method stub
+		try {
+			route.routePlan(car.getPosition(), destination);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return false;
 	}
 

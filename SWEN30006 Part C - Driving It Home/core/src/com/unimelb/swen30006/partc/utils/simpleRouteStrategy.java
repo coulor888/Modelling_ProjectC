@@ -22,15 +22,18 @@ public class simpleRouteStrategy extends Route {
 	
 	
 	public simpleRouteStrategy(Intersection[] intersections, World w) throws Exception{
-		this.graph = new NoDirectGraph(world.getIntersections());	
+		this.graph = new NoDirectGraph(w.getIntersections());	
 		world = w;
 	}
 	
+	@Override
 	public void routePlan(Point2D.Double currentPos, Point2D.Double destination) throws Exception{
 	
 			intersections = (ArrayList<Intersection>) graph.getBreadthFirstTraversal(
 					findIntersection(currentPos), findIntersection(destination));
 			findRoads();
+			
+			initRoutePoints(currentPos, destination);
 	}
 	
 	/*

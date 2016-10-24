@@ -13,9 +13,9 @@ public abstract class Route {
 	private ArrayList<Intersection> intersections = new ArrayList<Intersection>();
 	private ArrayList<Point2D.Double> routePoint = new ArrayList<Point2D.Double>();
 	
-	public boolean routePlan(Point2D.Double destination)
+	public void routePlan(Point2D.Double currentPos , Point2D.Double destination) throws Exception
 	{		
-		return true;
+		
 	}
 	
 	public ArrayList<Intersection> retrieveIntersections()
