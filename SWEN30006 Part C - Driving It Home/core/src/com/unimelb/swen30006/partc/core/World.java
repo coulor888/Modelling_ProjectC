@@ -12,7 +12,9 @@ import com.unimelb.swen30006.partc.controllers.AIController;
 import com.unimelb.swen30006.partc.controllers.Controller;
 import com.unimelb.swen30006.partc.controllers.KeyboardController;
 import com.unimelb.swen30006.partc.core.infrastructure.Light;
+import com.unimelb.swen30006.partc.core.infrastructure.TrafficLight;
 import com.unimelb.swen30006.partc.core.objects.Car;
+import com.unimelb.swen30006.partc.core.objects.Infrastructure;
 import com.unimelb.swen30006.partc.core.objects.WorldObject;
 import com.unimelb.swen30006.partc.perception.PerceptionForTesting;
 import com.unimelb.swen30006.partc.planning.Planning;
@@ -389,5 +391,37 @@ public class World implements ISteppable {
 		}
 
 	}	
-
+	
+	// get trafficlight object by road
+	public TrafficLight getTrafficLight(Road road, Intersection intersection){
+		TrafficLight tl = null;
+		String Dir = intersection.getDirectionByRoad(road);
+		Point2D.Double point = null;
+		if(Dir == "North"){
+			point.x = intersection.pos.x + intersection.width/2;
+			point.y = intersection.pos.y - intersection.length/2;
+		}else if(Dir == "South"){
+			point.x = intersection.pos.x - intersection.width/2;
+			point.y = intersection.pos.y + intersection.length/2;
+		}else if(Dir == "East"){
+			point.x = intersection.pos.x - intersection.width/2;
+			point.y = intersection.pos.y - intersection.length/2 ;
+		}else if(Dir == "West"){
+			point.x = intersection.pos.x + intersection.width/2;
+			point.y = intersection.pos.y + intersection.length/2 ;
+		}
+		WorldObject[] objs = objectsAtPoint(point); 
+		for(WorldObject wo: objs){
+			try{
+				Infrastructure ifs = (Infrastructure)wo;
+				if(ifs.type==Infrastructure.InfrastructureType.TrafficLight){
+					tl=(TrafficLight) ifs;
+				}
+			}catch(Exception e){
+				
+			}
+		}
+		return tl;
+		
+	}
 }

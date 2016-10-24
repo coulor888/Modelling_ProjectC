@@ -184,7 +184,50 @@ public class simpleRouteStrategy extends Route {
 	public Double findPointInIntersection(Road road, Intersection intersection) {
 		return intersection.getShiftPoint(road);
 	}
+	
+	public Double findPointInIntersection(Road road, Road road1,Intersection intersection) {
+		
+		Point2D.Double point = null;
+		String Dir1 = intersection.getDirectionByRoad(road);
+		String Dir2 = intersection.getDirectionByRoad(road1);
+		if(Dir1 == "North"){
+			if(Dir2 == "West"){
+				point.x = intersection.pos.x + intersection.width/4;
+				point.y = intersection.pos.y + intersection.length/4;
+			}else{
+				point.x = intersection.pos.x + intersection.width/4;
+				point.y = intersection.pos.y - intersection.length/4;
+			}
+			
+		}else if(Dir1 == "South"){
+			if(Dir2=="East"){
+				point.x = intersection.pos.x - intersection.width/4;
+				point.y = intersection.pos.y + intersection.length/4;
+			}else{
+				point.x = intersection.pos.x - intersection.width/4;
+				point.y = intersection.pos.y - intersection.length/4;
+			}
 
+		}else if(Dir1 == "East"){
+			if(Dir2=="North"){
+				point.x = intersection.pos.x - intersection.width/4;
+				point.y = intersection.pos.y - intersection.length/4;
+			}else{
+				point.x = intersection.pos.x + intersection.width/4;
+				point.y = intersection.pos.y - intersection.length/4;
+			}
+		}else if(Dir1 == "West"){
+			if(Dir2=="South"){
+				point.x = intersection.pos.x + intersection.width/4;
+				point.y = intersection.pos.y + intersection.length/4;
+			}else{
+				point.x = intersection.pos.x - intersection.width/4;
+				point.y = intersection.pos.y + intersection.length/4;
+			}
+		}
+		return point;
+	}
+	
 	@Override
 	public Double findPointInRoadBegin(Road road, Intersection intersection) {
 		String Dir = intersection.getDirectionByRoad(road);

@@ -23,7 +23,7 @@ public class Car extends WorldObject implements ISteppable {
 	private static final float FRICTION_FORCE = 3.5f;
 	private static final float EPSILON = 0.05f;
 	private static final float TURN_EPSILON = 0.0002f;
-	private static final float MAX_VELOCITY = 50f;
+	public static final float MAX_VELOCITY = 50f;
 	private static final float MAX_DEGREES = 360;
 	
 	// Private instance variables for configuration
